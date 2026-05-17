@@ -31,14 +31,14 @@
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
-        /* A água dentro do tanque */
-        .agua {
+        /* O combustível dentro do tanque */
+        .combustivel {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 0%; /* Isso vai ser alterado pelo JS */
-            background-color: #00a8ff;
+            background-color: #f39c12; /* Cor de gasolina/combustível */
             transition: height 1s ease-in-out;
             box-shadow: inset 0 20px 20px rgba(255,255,255,0.2);
         }
@@ -56,10 +56,10 @@
 <body>
 
     <div class="container">
-        <h2>Nível do Tanque</h2>
+        <h2>Nível do Gerador</h2>
         
         <div class="tanque-wrapper">
-            <div class="agua" id="nivel-agua"></div>
+            <div class="combustivel" id="nivel-agua"></div>
         </div>
 
         <div class="info">
@@ -74,8 +74,20 @@
                 .then(response => response.json())
                 .then(data => {
                     if(data && data.nivel !== undefined) {
-                        // Atualiza a altura da div de água (assumindo que o ESP manda de 0 a 100)
-                        document.getElementById('nivel-agua').style.height = data.nivel + '%';
+                        let divCombustivel = document.getElementById('nivel-agua');
+                        
+                        // Atualiza a altura da div de combustível
+                        divCombustivel.style.height = data.nivel + '%';
+                        
+                        // Lógica de cores dinâmicas (Verde, Amarelo, Vermelho)
+                        if (data.nivel > 60) {
+                            divCombustivel.style.backgroundColor = '#2ecc71'; // Verde (Bom)
+                        } else if (data.nivel > 20) {
+                            divCombustivel.style.backgroundColor = '#f39c12'; // Laranja/Amarelo (Atenção)
+                        } else {
+                            divCombustivel.style.backgroundColor = '#e74c3c'; // Vermelho (Crítico)
+                        }
+
                         // Atualiza o texto numérico
                         document.getElementById('texto-nivel').innerText = data.nivel;
                         
